@@ -1,14 +1,9 @@
-FROM python:3.11-slim-bullseye
-
-# Update packages and install security fixes
-RUN apt-get update && \
-	apt-get upgrade -y && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
+FROM python:3.9
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
 
-COPY ./app ./app
-CMD ["python", "app/main.py"]
+COPY . /app
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "api.index:app"]

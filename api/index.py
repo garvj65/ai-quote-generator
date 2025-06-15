@@ -12,6 +12,5 @@ def serve_index():
 def serve_quote():
     return jsonify({"quote": get_quote()})
 
-# ✅ THIS IS WHAT VERCEL NEEDS:
-def handler(environ, start_response):
-    return app.wsgi_app(environ, start_response)
+# ✅ This is the required entrypoint for Vercel
+handler = app

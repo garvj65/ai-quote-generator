@@ -1,9 +1,10 @@
 from flask import Flask, jsonify
-from app.quotes import get_quote
+from quotes import get_quote
+
 
 app = Flask(__name__)
 
-@app.route("/quote")
+@app.route("/")
 def quote():
     return jsonify({"quote": get_quote()})
 

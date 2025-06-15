@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dungeon Quote Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-dark: #1a1a2e;
+        --bg-light: #e0e0e0;
+        --text-dark: #ffffff;
+        --text-light: #1a1a2e;
+        --pixel-font: "Press Start 2P", monospace;
+      }
+      body {
+        background: var(--bg-dark);
+        color: var(--text-dark);
+        font-family: var(--pixel-font);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        padding: 2rem;
+        transition: background 0.4s, color 0.4s;
+      }
+      .light-mode {
+        background: var(--bg-light);
+        color: var(--text-light);
+      }
+      .toggle {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #333;
+        color: #fff;
+        border: 2px dashed #0ff;
+        font-family: var(--pixel-font);
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+      .light-mode .toggle {
+        background: #ddd;
+        color: #000;
+        border: 2px dashed #333;
+      }
+      .container {
+        background: #0f3460;
+        border: 6px solid #0ff;
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 800px;
+        width: 95%;
+        box-shadow: 0 0 15px #0ff;
+        transition: all 0.4s;
+      }
+      .light-mode .container {
+        background: #fff;
+        border-color: #333;
+        box-shadow: 0 0 15px #333;
+      }
+      .quote {
+        font-size: 1rem;
+        min-height: 80px;
+        margin-bottom: 1.5rem;
+        white-space: pre-wrap;
+        animation: fadeIn 0.5s ease-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .button {
+        font-size: 1rem;
+        padding: 1rem 2rem;
+        background: #00ffff;
+        color: #000;
+        border: 3px solid #000;
+        border-radius: 6px;
+        cursor: pointer;
+        box-shadow: 0 0 8px #00ffff;
+        transition: transform 0.2s ease;
+        animation: bounce 1s infinite;
+      }
+      .button:disabled {
+        cursor: not-allowed;
+        background: #555;
+        animation: none;
+      }
+      .button:hover:not(:disabled) {
+        transform: scale(1.05);
+        background: #00e0e0;
+      }
+      .spinner {
+        border: 6px dotted #00ffff;
+        border-top: 6px solid transparent;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 1rem auto;
+        display: none;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="toggle" onclick="toggleMode()">🎮 Mode</button>
+    <div class="container">
+      <div class="quote" id="quote">
+        ⚔️ Begin your quest: click to receive wisdom!
+      </div>
+      <div class="spinner" id="spinner"></div>
+      <button class="button" id="generate-btn" onclick="generateQuote()">
+        ✨ Generate Quote
+      </button>
+    </div>
+    <audio id="bg-audio" src="/static/ambience.mp3" loop></audio>
+
+    <script>
+      function toggleMode() {
+        document.body.classList.toggle("light-mode");
+      }
+
+      async function generateQuote() {
+        const quoteEl = document.getElementById("quote");
+        const spinner = document.getElementById("spinner");
+        const audio = document.getElementById("bg-audio");
+        const button = document.getElementById("generate-btn");
+
+        quoteEl.style.display = "none";
+        spinner.style.display = "block";
+        button.disabled = true;
+
+        try {
+          // Fetch from the new API route
+          const response = await fetch("/q1x99y");
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to fetch quote.");
+          }
+          const data = await response.json();
+          quoteEl.innerText = data.quote;
+
+          audio.muted = false;
+          audio.volume = 0.3;
+          audio
+            .play()
+            .catch((e) =>
+              console.warn(
+                "Autoplay was prevented. User must interact with the page first."
+              )
+            );
+        } catch (error) {
+          quoteEl.innerText = `⚠️ ${error.message}`;
+        } finally {
+          spinner.style.display = "none";
+          quoteEl.style.display = "flex";
+          button.disabled = false;
+        }
+      }
+    </script>
+  </body>
+</html>

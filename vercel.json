@@ -3,15 +3,12 @@
   "builds": [
     {
       "src": "api/index.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.10"
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     { "src": "/q1x99y", "dest": "api/index.py" },
     { "src": "/", "dest": "api/index.py" },
-    { "src": "/static/(.*)", "dest": "/api/static/$1" }
+    { "src": "/static/(.*)", "dest": "api/static/$1" }
   ]
 }

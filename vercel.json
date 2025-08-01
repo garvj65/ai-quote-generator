@@ -12,8 +12,8 @@
     }
   ],
   "routes": [
-    { "src": "/q1x99y", "dest": "api/index.py" },
-    { "src": "/", "dest": "api/index.py" },
-    { "src": "/static/(.*)", "dest": "api/static/$1" }
+    { "src": "/q1x99y", "dest": "/api/index.py" },
+    { "src": "/", "dest": "/api/index.py" },
+    { "src": "/static/(.*)", "dest": "/api/static/$1" }
   ]
 }

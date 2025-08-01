@@ -2,7 +2,7 @@ from flask import Flask, jsonify, send_from_directory
 from .quotes import get_quote
 import os
 
-app = Flask(__name__, static_folder="../templates")
+app = Flask(__name__, static_folder="static")
 
 @app.route("/")
 def serve_index():
